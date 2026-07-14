@@ -16,5 +16,9 @@
     "url": "https://github.com/Anup-Maurya799/Multi-Tenant-E-Commerce-Platform/issues"
   },
   "homepage": "https://github.com/Anup-Maurya799/Multi-Tenant-E-Commerce-Platform#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.2",
+    "tailwindcss": "^4.3.2"
+  }
 }
