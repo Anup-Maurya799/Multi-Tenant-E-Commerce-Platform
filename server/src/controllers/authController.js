@@ -60,12 +60,12 @@ export const register = asyncHandler(async (req, res) => {
     verificationTokenExpires: Date.now() + 24 * 60 * 60 * 1000, // 24h
   });
 
-  const verifyUrl = `${CLIENT_URL}/verify-email?token=${rawVerificationToken}`;
-  await sendEmail({
-    to: user.email,
-    subject: "Verify your Zaalima Marketplace account",
-    html: verificationEmailTemplate({ name: user.name, verifyUrl }),
-  });
+  // const verifyUrl = `${CLIENT_URL}/verify-email?token=${rawVerificationToken}`;
+  // await sendEmail({
+  //   to: user.email,
+  //   subject: "Verify your Zaalima Marketplace account",
+  //   html: verificationEmailTemplate({ name: user.name, verifyUrl }),
+  // });
 
   res.status(201).json({
     message: "Account created. Please check your email to verify your account.",
@@ -151,12 +151,12 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1h
     await user.save();
 
-    const resetUrl = `${CLIENT_URL}/reset-password?token=${rawResetToken}`;
-    await sendEmail({
-      to: user.email,
-      subject: "Reset your Zaalima Marketplace password",
-      html: resetPasswordEmailTemplate({ name: user.name, resetUrl }),
-    });
+    // const resetUrl = `${CLIENT_URL}/reset-password?token=${rawResetToken}`;
+    // await sendEmail({
+    //   to: user.email,
+    //   subject: "Reset your Zaalima Marketplace password",
+    //   html: resetPasswordEmailTemplate({ name: user.name, resetUrl }),
+    // });
   }
 
   res.json({
@@ -231,12 +231,12 @@ export const resendVerificationEmail = asyncHandler(async (req, res) => {
     user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
     await user.save();
 
-    const verifyUrl = `${CLIENT_URL}/verify-email?token=${rawVerificationToken}`;
-    await sendEmail({
-      to: user.email,
-      subject: "Verify your Zaalima Marketplace account",
-      html: verificationEmailTemplate({ name: user.name, verifyUrl }),
-    });
+    // const verifyUrl = `${CLIENT_URL}/verify-email?token=${rawVerificationToken}`;
+    // await sendEmail({
+    //   to: user.email,
+    //   subject: "Verify your Zaalima Marketplace account",
+    //   html: verificationEmailTemplate({ name: user.name, verifyUrl }),
+    // });
   }
 
   res.json({
