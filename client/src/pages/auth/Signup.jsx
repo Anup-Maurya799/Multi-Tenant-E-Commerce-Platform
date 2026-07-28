@@ -55,7 +55,7 @@ function Signup() {
     return (
       <div className="flex flex-col items-center text-center">
         <div className="mx-auto mb-3 h-12 w-12 rounded-xl bg-sky-500 flex items-center justify-center text-white font-bold text-lg">
-          Z
+          A
         </div>
         <h2 className="text-2xl font-bold text-slate-800">Check your email</h2>
         <p className="text-sm text-slate-500 mt-1 mb-4">

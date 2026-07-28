@@ -1,7 +1,34 @@
-# Multi-Tenant-E-Commerce-Platform
+# Multi-Tenant E-Commerce Platform
 
-MERN Stack Project
+A scalable MERN stack e-commerce platform supporting multiple vendors, customer authentication, and secure role-based access.
 
-## Team Members
+## Tech Stack
 
-- Anup
+- React
+- Tailwind CSS
+- Node.js
+- Express.js
+- MongoDB Atlas
+- JWT Authentication
+
+## Features
+
+- User Authentication
+- JWT Access & Refresh Tokens
+- Role-Based Authorization
+- Multi-Tenant Architecture
+- Vendor Store Management
+- Product Management
+- Order Management
+
+## Project Structure
+
+```
+client/
+docs/
+server/
+```
+
+## Team
+
+- Anup Maurya
