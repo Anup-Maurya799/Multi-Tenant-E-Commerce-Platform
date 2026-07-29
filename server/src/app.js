@@ -24,7 +24,7 @@ app.get("/api/v1/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/stores", storeRoutes);
 
 // Week 2+ routes get mounted here as they're built:
 // app.use("/api/v1/stores", storeRoutes);

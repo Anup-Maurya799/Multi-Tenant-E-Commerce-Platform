@@ -1,18 +1,18 @@
 import { Router } from "express";
-import express from "express";
 import rateLimit from "express-rate-limit";
-import {
-  register,
-  login,
-  refreshTokenHandler,
-  logout,
-  getMe,
-  forgotPassword,
-  resetPassword,
-  verifyEmail,
-  resendVerificationEmail,
-} from "../controllers/authController.js";
+
+import * as authController from "../controllers/authController.js";
 import { requireAuth } from "../middleware/auth.js";
+import { validateRequest } from "../middleware/validateRequest.js";
+import {
+  registerValidator,
+  loginValidator,
+  refreshTokenValidator,
+  forgotPasswordValidator,
+  resetPasswordValidator,
+  verifyEmailValidator,
+  resendVerificationValidator,
+} from "../validators/auth.validator.js";
 
 const router = Router();
 
@@ -26,15 +26,55 @@ const authLimiter = rateLimit({
   message: { message: "Too many attempts. Please try again later." },
 });
 
-router.post("/register", authLimiter, register);
-router.post("/login", authLimiter, login);
-router.post("/refresh-token", refreshTokenHandler);
-router.post("/logout", requireAuth, logout);
-router.get("/me", requireAuth, getMe);
+router.post(
+  "/register",
+  authLimiter,
+  registerValidator,
+  validateRequest,
+  authController.register,
+);
+router.post(
+  "/login",
+  authLimiter,
+  loginValidator,
+  validateRequest,
+  authController.login,
+);
+router.post(
+  "/refresh-token",
+  refreshTokenValidator,
+  validateRequest,
+  authController.refreshTokenHandler,
+);
+router.post("/logout", requireAuth, authController.logout);
+router.get("/me", requireAuth, authController.getMe);
 
-router.post("/forgot-password", authLimiter, forgotPassword);
-router.post("/reset-password", authLimiter, resetPassword);
-router.post("/verify-email", verifyEmail);
-router.post("/resend-verification", authLimiter, resendVerificationEmail);
+router.post(
+  "/forgot-password",
+  authLimiter,
+  forgotPasswordValidator,
+  validateRequest,
+  authController.forgotPassword,
+);
+router.post(
+  "/reset-password",
+  authLimiter,
+  resetPasswordValidator,
+  validateRequest,
+  authController.resetPassword,
+);
+router.post(
+  "/verify-email",
+  verifyEmailValidator,
+  validateRequest,
+  authController.verifyEmail,
+);
+router.post(
+  "/resend-verification",
+  authLimiter,
+  resendVerificationValidator,
+  validateRequest,
+  authController.resendVerificationEmail,
+);
 
 export default router;
