@@ -4,6 +4,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 
 import authRoutes from "./routes/authRoutes.js";
+import storeRoutes from "./routes/storeRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -24,12 +26,13 @@ app.get("/api/v1/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/stores", storeRoutes);
+app.use("/api/v1/products", productRoutes);
 
-// Week 2+ routes get mounted here as they're built:
-// app.use("/api/v1/stores", storeRoutes);
-// app.use("/api/v1/products", productRoutes);
+// Week 3+ routes get mounted here as they're built:
 // app.use("/api/v1/orders", orderRoutes);
+// app.use("/api/v1/cart", cartRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
