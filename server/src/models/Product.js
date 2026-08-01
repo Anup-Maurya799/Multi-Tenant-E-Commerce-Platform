@@ -22,7 +22,18 @@ const productSchema = new mongoose.Schema(
     description: { type: String, trim: true, default: "" },
     price: { type: Number, required: true, min: 0 },
     stock: { type: Number, default: 0, min: 0 },
-    images: [{ type: String }], // Cloudinary URLs, added in Week 2
+    images: [
+      {
+        url: {
+          type: String,
+          required: true,
+        },
+        publicId: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
     variants: [variantSchema],
     isPublished: { type: Boolean, default: true },
   },

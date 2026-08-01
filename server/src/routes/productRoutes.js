@@ -38,12 +38,13 @@ router.get(
   productController.listMyProducts,
 );
 router.post(
-  "/",
+  "/:productId/images",
   requireAuth,
-  authorize("vendor"),
-  createProductValidator,
+  authorize("vendor", "superadmin"),
+  uploadProductImages,
+  productIdParamValidator,
   validateRequest,
-  productController.createProduct,
+  productController.uploadProductImages,
 );
 router.patch(
   "/:productId",
