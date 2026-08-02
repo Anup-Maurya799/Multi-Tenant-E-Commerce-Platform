@@ -26,7 +26,7 @@ const storeSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-storeSchema.index({ slug: 1 });
+// storeSchema.index({ slug: 1 });
 storeSchema.index({ owner: 1 });
 
 export default mongoose.model("Store", storeSchema);
