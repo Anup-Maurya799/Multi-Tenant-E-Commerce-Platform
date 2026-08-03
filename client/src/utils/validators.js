@@ -87,6 +87,24 @@ export function validateResetPasswordForm({ password, confirmPassword }) {
   return errors;
 }
 
+/** Product validation — used by the Vendor Dashboard's product form. */
+export function validateProductForm({ name, price, stock }) {
+  const errors = {};
+  if (!name.trim()) errors.name = "Product name is required.";
+  if (price === "" || price === null || Number.isNaN(Number(price)))
+    errors.price = "Price is required.";
+  else if (Number(price) < 0) errors.price = "Price cannot be negative.";
+  if (stock !== "" && stock !== null && Number(stock) < 0)
+    errors.stock = "Stock cannot be negative.";
+  return errors;
+}
+
+export function validateStoreForm({ name }) {
+  const errors = {};
+  if (!name.trim()) errors.name = "Store name is required.";
+  return errors;
+}
+
 export function hasErrors(errorsObject) {
   return Object.keys(errorsObject).length > 0;
 }

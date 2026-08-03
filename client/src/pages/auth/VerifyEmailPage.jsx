@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -12,22 +13,19 @@ import { isValidEmail } from "../../utils/validators";
 function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-
-  const [status, setStatus] = useState("verifying"); // verifying | success | error
+  const [status, setStatus] = useState("verifying");
   const [resendEmail, setResendEmail] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
   const [resendMessage, setResendMessage] = useState("");
   const [resendError, setResendError] = useState("");
-
   const navigate = useNavigate();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!token) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStatus("error");
       return;
     }
-
     authService
       .verifyEmail(token)
       .then(() => setStatus("success"))
@@ -49,13 +47,11 @@ function VerifyEmailPage() {
   const handleResend = async () => {
     setResendError("");
     setResendMessage("");
-
     if (resendCooldown > 0) return;
     if (!isValidEmail(resendEmail)) {
       setResendError("Enter a valid email address to resend the link.");
       return;
     }
-
     try {
       await authService.resendVerificationEmail(resendEmail);
       setResendMessage(
@@ -71,7 +67,7 @@ function VerifyEmailPage() {
     <>
       <div className="text-center mb-6">
         <div className="mx-auto mb-3 h-12 w-12 rounded-xl bg-sky-500 flex items-center justify-center text-white font-bold text-lg">
-          A
+          Z
         </div>
         <h2 className="text-2xl font-bold text-slate-800">
           {status === "verifying" && "Verifying your email"}
@@ -84,7 +80,6 @@ function VerifyEmailPage() {
           {status === "error" && "This link is invalid or has expired"}
         </p>
       </div>
-
       <div className="flex flex-col items-center text-center">
         {status === "verifying" && (
           <>
@@ -94,7 +89,6 @@ function VerifyEmailPage() {
             </p>
           </>
         )}
-
         {status === "success" && (
           <>
             <FaCheckCircle className="text-sky-500 mb-4" size={44} />
@@ -110,7 +104,6 @@ function VerifyEmailPage() {
             </Link>
           </>
         )}
-
         {status === "error" && (
           <>
             <FaTimesCircle className="text-red-400 mb-4" size={44} />
@@ -118,7 +111,6 @@ function VerifyEmailPage() {
               The link may have expired, or already been used. Enter your email
               to request a new one.
             </p>
-
             <input
               type="email"
               placeholder="you@example.com"
@@ -126,7 +118,6 @@ function VerifyEmailPage() {
               onChange={(e) => setResendEmail(e.target.value)}
               className="w-full mb-3 rounded-lg border border-sky-200 px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400 transition"
             />
-
             {resendError && (
               <p className="w-full text-sm text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-3">
                 {resendError}
@@ -134,11 +125,9 @@ function VerifyEmailPage() {
             )}
             {resendMessage && (
               <p className="w-full text-sm text-sky-600 bg-sky-50 border border-sky-100 rounded-lg px-3 py-2 mb-3 flex items-center justify-center gap-2">
-                <FaEnvelopeOpenText size={14} />
-                {resendMessage}
+                <FaEnvelopeOpenText size={14} /> {resendMessage}
               </p>
             )}
-
             <button
               onClick={handleResend}
               disabled={resendCooldown > 0}
@@ -148,7 +137,6 @@ function VerifyEmailPage() {
                 `Resend available in ${resendCooldown}s`
               : "Resend verification email"}
             </button>
-
             <Link
               to="/login"
               className="text-sm text-sky-600 hover:text-sky-700 font-medium"

@@ -1,5 +1,13 @@
 import mongoose from "mongoose";
 
+const imageSchema = new mongoose.Schema(
+  {
+    url: { type: String, required: true },
+    publicId: { type: String, required: true },
+  },
+  { _id: false },
+);
+
 const variantSchema = new mongoose.Schema(
   {
     size: { type: String, trim: true },
@@ -12,7 +20,6 @@ const variantSchema = new mongoose.Schema(
 
 const productSchema = new mongoose.Schema(
   {
-    // Tenant-isolation key — every product query must filter by this.
     storeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Store",
@@ -22,18 +29,7 @@ const productSchema = new mongoose.Schema(
     description: { type: String, trim: true, default: "" },
     price: { type: Number, required: true, min: 0 },
     stock: { type: Number, default: 0, min: 0 },
-    images: [
-      {
-        url: {
-          type: String,
-          required: true,
-        },
-        publicId: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+    images: [imageSchema], // Cloudinary { url, publicId } pairs — publicId enables real deletion
     variants: [variantSchema],
     isPublished: { type: Boolean, default: true },
   },
@@ -42,5 +38,7 @@ const productSchema = new mongoose.Schema(
 
 productSchema.index({ storeId: 1 });
 productSchema.index({ storeId: 1, name: "text" });
+// Matches the public storefront listing (GET /products): filter by isPublished, sort newest first
+productSchema.index({ isPublished: 1, createdAt: -1 });
 
 export default mongoose.model("Product", productSchema);

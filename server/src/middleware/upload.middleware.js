@@ -27,3 +27,7 @@ const upload = multer({
 });
 
 export const uploadProductImages = upload.array("images", 8);
+
+export const uploadStoreLogo = multer({ storage, fileFilter, limits }).single(
+  "logo",
+);

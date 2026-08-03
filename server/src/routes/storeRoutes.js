@@ -3,6 +3,7 @@ import * as storeController from "../controllers/storeController.js";
 import { requireAuth } from "../middleware/auth.js";
 import { authorize } from "../middleware/rbac.middleware.js";
 import { validateRequest } from "../middleware/validateRequest.js";
+import { uploadStoreLogo } from "../middleware/upload.middleware.js";
 import {
   createStoreValidator,
   updateStoreValidator,
@@ -42,6 +43,16 @@ router.patch(
   updateStoreValidator,
   validateRequest,
   storeController.updateStore,
+);
+
+router.post(
+  "/:storeId/logo",
+  requireAuth,
+  authorize("vendor", "superadmin"),
+  storeIdParamValidator,
+  validateRequest,
+  uploadStoreLogo,
+  storeController.uploadStoreLogo,
 );
 
 export default router;

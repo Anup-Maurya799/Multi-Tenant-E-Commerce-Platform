@@ -21,12 +21,12 @@ const storeSchema = new mongoose.Schema(
     },
     description: { type: String, trim: true, default: "" },
     logoUrl: { type: String, default: "" },
+    logoPublicId: { type: String, default: "" },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true },
 );
 
-// storeSchema.index({ slug: 1 });
 storeSchema.index({ owner: 1 });
 
 export default mongoose.model("Store", storeSchema);

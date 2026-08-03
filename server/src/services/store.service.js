@@ -2,6 +2,10 @@ import Store from "../models/Store.js";
 import User from "../models/User.js";
 import { ApiError } from "../utils/ApiError.js";
 import { slugify } from "../utils/slugify.js";
+import {
+  uploadBufferToCloudinary,
+  deleteFromCloudinary,
+} from "../utils/cloudinaryUpload.js";
 
 /** Guarantees a unique slug by appending a short random suffix on collision. */
 async function generateUniqueSlug(name) {
@@ -97,5 +101,39 @@ export async function updateStore(requestingUser, storeId, updates) {
 
   Object.assign(store, updates);
   await store.save();
+  return store;
+}
+
+/** Replaces the store's logo: uploads the new one, then cleans up the old one from Cloudinary. */
+export async function updateStoreLogo(requestingUser, storeId, file) {
+  if (!file) {
+    throw new ApiError(400, "A logo image file is required.");
+  }
+
+  const store = await Store.findById(storeId);
+  if (!store) {
+    throw new ApiError(404, "Store not found.");
+  }
+
+  const isOwner = store.owner.toString() === requestingUser._id.toString();
+  if (!isOwner && requestingUser.role !== "superadmin") {
+    throw new ApiError(403, "You do not have permission to update this store.");
+  }
+
+  const previousPublicId = store.logoPublicId;
+  const { url, publicId } = await uploadBufferToCloudinary(
+    file.buffer,
+    `zaalima/stores/${store._id}`,
+  );
+
+  store.logoUrl = url;
+  store.logoPublicId = publicId;
+  await store.save();
+
+  // Clean up the old logo only after the new one is confirmed saved.
+  if (previousPublicId) {
+    await deleteFromCloudinary(previousPublicId);
+  }
+
   return store;
 }

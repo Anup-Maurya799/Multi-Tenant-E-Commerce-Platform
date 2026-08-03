@@ -27,3 +27,17 @@ export default function useAuth() {
 
   return authState;
 }
+// import { useSelector } from "react-redux";
+
+// export default function useAuth() {
+//   const { user, isAuthenticated, status, error } = useSelector(
+//     (state) => state.auth,
+//   );
+//   return {
+//     user,
+//     isAuthenticated,
+//     role: user?.role || null,
+//     isCheckingSession: status === "checkingSession",
+//     error,
+//   };
+// }

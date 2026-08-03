@@ -15,11 +15,9 @@ function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-
     const validationErrors = validateForgotPasswordForm({ email });
     setErrors(validationErrors);
     if (hasErrors(validationErrors)) return;
-
     setIsSubmitting(true);
     try {
       await authService.requestPasswordReset(email);
@@ -35,7 +33,7 @@ function ForgotPassword() {
     <>
       <div className="text-center mb-6">
         <div className="mx-auto mb-3 h-12 w-12 rounded-xl bg-sky-500 flex items-center justify-center text-white font-bold text-lg">
-          A
+          Z
         </div>
         <h2 className="text-2xl font-bold text-slate-800">
           {isSent ? "Check your email" : "Forgot your password?"}
@@ -46,7 +44,6 @@ function ForgotPassword() {
           : "Enter your email and we'll send you a reset link"}
         </p>
       </div>
-
       {isSent ?
         <div className="flex flex-col items-center text-center">
           <FaCheckCircle className="text-sky-500 mb-3" size={40} />
@@ -79,21 +76,17 @@ function ForgotPassword() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               aria-invalid={!!errors.email}
-              className={`w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400
-                focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400 transition
-                ${errors.email ? "border-red-400" : "border-sky-200"}`}
+              className={`w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400 transition ${errors.email ? "border-red-400" : "border-sky-200"}`}
             />
             {errors.email && (
               <p className="mt-1 text-xs text-red-500">{errors.email}</p>
             )}
           </div>
-
           {message && (
             <p className="text-sm text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
               {message}
             </p>
           )}
-
           <button
             type="submit"
             disabled={isSubmitting}
@@ -106,13 +99,11 @@ function ForgotPassword() {
           </button>
         </form>
       }
-
       <Link
         to="/login"
         className="mt-6 flex items-center justify-center gap-2 text-sm text-sky-600 hover:text-sky-700 font-medium"
       >
-        <FaArrowLeft size={12} />
-        Back to login
+        <FaArrowLeft size={12} /> Back to login
       </Link>
     </>
   );

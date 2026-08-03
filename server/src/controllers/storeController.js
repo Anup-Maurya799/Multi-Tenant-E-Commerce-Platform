@@ -30,3 +30,12 @@ export const updateStore = asyncHandler(async (req, res) => {
   );
   res.json({ message: "Store updated successfully.", store });
 });
+
+export const uploadStoreLogo = asyncHandler(async (req, res) => {
+  const store = await storeService.updateStoreLogo(
+    req.user,
+    req.params.storeId,
+    req.file,
+  );
+  res.json({ message: "Store logo updated successfully.", store });
+});

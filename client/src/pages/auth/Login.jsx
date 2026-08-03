@@ -1,8 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import authService from "../../services/authService";
+import { loginUser } from "../../store/slices/authSlice";
 import { validateLoginForm, hasErrors } from "../../utils/validators";
 
 function Login() {
@@ -14,24 +15,29 @@ function Login() {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage("");
-
     const validationErrors = validateLoginForm({ email, password });
     setErrors(validationErrors);
     if (hasErrors(validationErrors)) return;
 
     setIsSubmitting(true);
     try {
-      const data = await authService.login({ email, password });
-
+      const user = await dispatch(loginUser({ email, password })).unwrap();
       if (rememberMe) localStorage.setItem("rememberedEmail", email);
       else localStorage.removeItem("rememberedEmail");
 
-      navigate(data.user.role === "vendor" ? "/vendor/dashboard" : "/imp");
+      const redirectTo = location.state?.from?.pathname;
+      if (redirectTo) navigate(redirectTo, { replace: true });
+      else
+        navigate(user.role === "vendor" ? "/vendor/dashboard" : "/imp", {
+          replace: true,
+        });
     } catch (errorMessage) {
       setMessage(errorMessage);
     } finally {
@@ -41,17 +47,15 @@ function Login() {
 
   return (
     <>
-      {/* Header */}
       <div className="text-center mb-6">
         <div className="mx-auto mb-3 h-12 w-12 rounded-xl bg-sky-500 flex items-center justify-center text-white font-bold text-lg">
-          A
+          Z
         </div>
         <h2 className="text-2xl font-bold text-slate-800">Welcome back</h2>
         <p className="text-sm text-slate-500 mt-1">
           Sign in to your vendor or customer account
         </p>
       </div>
-
       <form onSubmit={handleLogin} noValidate className="space-y-4">
         <div>
           <label
@@ -67,15 +71,12 @@ function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             aria-invalid={!!errors.email}
-            className={`w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400
-              focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400 transition
-              ${errors.email ? "border-red-400" : "border-sky-200"}`}
+            className={`w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400 transition ${errors.email ? "border-red-400" : "border-sky-200"}`}
           />
           {errors.email && (
             <p className="mt-1 text-xs text-red-500">{errors.email}</p>
           )}
         </div>
-
         <div>
           <label
             htmlFor="password"
@@ -91,9 +92,7 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               aria-invalid={!!errors.password}
-              className={`w-full rounded-lg border px-3.5 py-2.5 pr-10 text-sm text-slate-800 placeholder-slate-400
-                focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400 transition
-                ${errors.password ? "border-red-400" : "border-sky-200"}`}
+              className={`w-full rounded-lg border px-3.5 py-2.5 pr-10 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400 transition ${errors.password ? "border-red-400" : "border-sky-200"}`}
             />
             <span
               onClick={() => setShowPassword(!showPassword)}
@@ -108,7 +107,6 @@ function Login() {
             <p className="mt-1 text-xs text-red-500">{errors.password}</p>
           )}
         </div>
-
         <div className="flex items-center justify-between text-sm">
           <label className="flex items-center gap-2 text-slate-600 cursor-pointer select-none">
             <input
@@ -126,13 +124,11 @@ function Login() {
             Forgot password?
           </Link>
         </div>
-
         {message && (
           <p className="text-sm text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
             {message}
           </p>
         )}
-
         <button
           type="submit"
           disabled={isSubmitting}
@@ -144,7 +140,6 @@ function Login() {
           {isSubmitting ? "Signing in..." : "Login"}
         </button>
       </form>
-
       <p className="text-center text-sm text-slate-500 mt-6">
         Don&apos;t have an account?{" "}
         <Link
