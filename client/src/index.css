@@ -1,14 +1,20 @@
-@import "tailwindcss";
-/* @tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  body { @apply text-slate-800 antialiased; }
-  h1, h2, h3, h4 { @apply font-display; }
+  body {
+    @apply text-slate-800 antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+  }
   :focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba(56, 138, 221, 0.35);
     border-radius: 0.5rem;
   }
-} */
+}

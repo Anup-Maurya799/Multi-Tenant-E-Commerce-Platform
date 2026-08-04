@@ -3,6 +3,10 @@ import { ApiError } from "../utils/ApiError.js";
 
 const storage = multer.memoryStorage();
 
+const limits = {
+  fileSize: 5 * 1024 * 1024, // 5MB
+};
+
 const fileFilter = (req, file, cb) => {
   const allowedMimeTypes = [
     "image/jpeg",
@@ -21,13 +25,13 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-  },
+  limits,
 });
 
 export const uploadProductImages = upload.array("images", 8);
 
-export const uploadStoreLogo = multer({ storage, fileFilter, limits }).single(
-  "logo",
-);
+export const uploadStoreLogo = multer({
+  storage,
+  fileFilter,
+  limits,
+}).single("logo");

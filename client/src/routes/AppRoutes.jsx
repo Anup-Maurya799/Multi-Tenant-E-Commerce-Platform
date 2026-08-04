@@ -1,8 +1,8 @@
-// eslint-disable-next-line no-unused-vars
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import AuthLayout from "../layouts/AuthLayout";
+import VendorLayout from "../layouts/VendorLayout";
 import ProtectedRoute from "../components/routes/ProtectedRoute";
 import PublicRoute from "../components/routes/PublicRoute";
 
@@ -14,11 +14,16 @@ import VerifyEmailPage from "../pages/auth/VerifyEmailPage";
 import UnauthorizedPage from "../pages/UnauthorizedPage";
 import NotFoundPage from "../pages/NotFoundPage";
 
+import CreateStorePage from "../pages/vendor/CreateStorePage";
+import ProductListPage from "../pages/vendor/ProductListPage";
+import ProductFormPage from "../pages/vendor/ProductFormPage";
+import StoreSettingsPage from "../pages/vendor/StoreSettingsPage";
+
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public-only auth screens: logged-in users get redirected away */}
+        {/* Public-only auth screens */}
         <Route element={<PublicRoute />}>
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
@@ -27,18 +32,29 @@ function AppRoutes() {
           </Route>
         </Route>
 
-        {/* Token-linked auth screens: reachable whether logged in or not */}
+        {/* Token-linked auth screens */}
         <Route element={<AuthLayout />}>
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
         </Route>
 
-        {/* Example of a protected area, role-restricted to vendors */}
+        {/* Vendor-only area */}
         <Route element={<ProtectedRoute allowedRoles={["vendor"]} />}>
-          {/* <Route path="/vendor/dashboard" element={<VendorDashboard />} /> */}
+          {/* Standalone — outside VendorLayout, since the sidebar assumes a store already exists */}
+          <Route path="/vendor/onboarding" element={<CreateStorePage />} />
+
+          <Route element={<VendorLayout />}>
+            <Route path="/vendor/dashboard" element={<ProductListPage />} />
+            <Route path="/vendor/products/new" element={<ProductFormPage />} />
+            <Route
+              path="/vendor/products/:productId/edit"
+              element={<ProductFormPage />}
+            />
+            <Route path="/vendor/store" element={<StoreSettingsPage />} />
+          </Route>
         </Route>
 
-        {/* Example of a protected area, any authenticated role */}
+        {/* Any authenticated role */}
         <Route element={<ProtectedRoute />}>
           {/* <Route path="/imp" element={<CustomerDashboard />} /> */}
         </Route>
