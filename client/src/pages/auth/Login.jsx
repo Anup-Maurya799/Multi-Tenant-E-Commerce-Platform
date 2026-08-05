@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -33,11 +32,13 @@ function Login() {
       else localStorage.removeItem("rememberedEmail");
 
       const redirectTo = location.state?.from?.pathname;
+      const destinationByRole = {
+        vendor: "/vendor/dashboard",
+        superadmin: "/admin/analytics",
+        customer: "/shop",
+      };
       if (redirectTo) navigate(redirectTo, { replace: true });
-      else
-        navigate(user.role === "vendor" ? "/vendor/dashboard" : "/imp", {
-          replace: true,
-        });
+      else navigate(destinationByRole[user.role] || "/shop", { replace: true });
     } catch (errorMessage) {
       setMessage(errorMessage);
     } finally {

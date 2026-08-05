@@ -8,6 +8,7 @@ const orderItemSchema = new mongoose.Schema(
       required: true,
     },
     name: { type: String, required: true },
+    variantLabel: { type: String, default: null }, // e.g. "Large / Red" — null means base product, no variant
     quantity: { type: Number, required: true, min: 1 },
     unitPrice: { type: Number, required: true, min: 0 },
   },
@@ -21,7 +22,6 @@ const orderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    // Tenant-isolation key — a vendor only ever sees orders for their own store.
     storeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Store",
@@ -46,7 +46,9 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-orderSchema.index({ storeId: 1, createdAt: -1 });
-orderSchema.index({ customer: 1 });
+// Matches getVendorOrders + every analytics aggregation ($match on storeId+status, sorted by createdAt)
+orderSchema.index({ storeId: 1, status: 1, createdAt: -1 });
+// Matches getMyOrders (a customer's own order history, newest first)
+orderSchema.index({ customer: 1, createdAt: -1 });
 
 export default mongoose.model("Order", orderSchema);

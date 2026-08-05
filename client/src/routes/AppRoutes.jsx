@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import AuthLayout from "../layouts/AuthLayout";
 import VendorLayout from "../layouts/VendorLayout";
+import ShopLayout from "../layouts/ShopLayout";
 import ProtectedRoute from "../components/routes/ProtectedRoute";
 import PublicRoute from "../components/routes/PublicRoute";
 
@@ -18,6 +19,10 @@ import CreateStorePage from "../pages/vendor/CreateStorePage";
 import ProductListPage from "../pages/vendor/ProductListPage";
 import ProductFormPage from "../pages/vendor/ProductFormPage";
 import StoreSettingsPage from "../pages/vendor/StoreSettingsPage";
+
+import StorefrontPage from "../pages/shop/StorefrontPage";
+import ProductDetailPage from "../pages/shop/ProductDetailPage";
+import CartPage from "../pages/shop/CartPage";
 
 function AppRoutes() {
   return (
@@ -38,11 +43,20 @@ function AppRoutes() {
           <Route path="/verify-email" element={<VerifyEmailPage />} />
         </Route>
 
+        {/* Public storefront — browsable by guests AND logged-in customers */}
+        <Route element={<ShopLayout />}>
+          <Route path="/shop" element={<StorefrontPage />} />
+          <Route
+            path="/shop/products/:productId"
+            element={<ProductDetailPage />}
+          />
+          <Route path="/cart" element={<CartPage />} />
+          {/* <Route path="/checkout" element={<CheckoutPage />} /> — Week 3 Day 3-5 (Stripe), not built yet */}
+        </Route>
+
         {/* Vendor-only area */}
         <Route element={<ProtectedRoute allowedRoles={["vendor"]} />}>
-          {/* Standalone — outside VendorLayout, since the sidebar assumes a store already exists */}
           <Route path="/vendor/onboarding" element={<CreateStorePage />} />
-
           <Route element={<VendorLayout />}>
             <Route path="/vendor/dashboard" element={<ProductListPage />} />
             <Route path="/vendor/products/new" element={<ProductFormPage />} />
@@ -60,7 +74,7 @@ function AppRoutes() {
         </Route>
 
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/shop" replace />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

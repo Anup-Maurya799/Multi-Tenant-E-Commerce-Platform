@@ -1,12 +1,31 @@
-import express from "express";
+import { Router } from "express";
+import * as orderController from "../controllers/orderController.js";
+import { requireAuth } from "../middleware/auth.js";
+import { authorize } from "../middleware/rbac.middleware.js";
+import { validateRequest } from "../middleware/validateRequest.js";
+import { createOrderValidator } from "../validators/order.validator.js";
 
-const router = express.Router();
+const router = Router();
 
-// Placeholder route
-router.get("/", (req, res) => {
-  res.json({
-    message: "Order routes not implemented yet.",
-  });
-});
+router.post(
+  "/",
+  requireAuth,
+  authorize("customer"),
+  createOrderValidator,
+  validateRequest,
+  orderController.createOrder,
+);
+router.get(
+  "/mine",
+  requireAuth,
+  authorize("customer"),
+  orderController.getMyOrders,
+);
+router.get(
+  "/vendor/mine",
+  requireAuth,
+  authorize("vendor"),
+  orderController.getVendorOrders,
+);
 
 export default router;

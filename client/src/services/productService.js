@@ -1,6 +1,15 @@
 import { api, extractErrorMessage } from "./authService";
 
 const productService = {
+  /** Public storefront browsing — no auth required. */
+  async listPublicProducts(params = {}) {
+    try {
+      const { data } = await api.get("/products", { params });
+      return data;
+    } catch (error) {
+      throw extractErrorMessage(error);
+    }
+  },
   async listMyProducts(params = {}) {
     try {
       const { data } = await api.get("/products/vendor/mine", { params });

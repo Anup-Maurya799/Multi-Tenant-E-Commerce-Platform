@@ -45,3 +45,51 @@ export function resetPasswordEmailTemplate({ name, resetUrl }) {
     </div>
   `;
 }
+
+export function orderConfirmationEmailTemplate({
+  customerName,
+  orderId,
+  items,
+  total,
+}) {
+  const itemRows = items
+    .map(
+      (item) => `
+        <tr>
+          <td style="padding:8px;border-bottom:1px solid #eee;">${item.name}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;">${item.quantity}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;">₹${item.price}</td>
+        </tr>
+      `,
+    )
+    .join("");
+
+  return `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
+      <h2 style="color:#0c447c;">Order Confirmed 🎉</h2>
+
+      <p>Hello ${customerName},</p>
+
+      <p>Your order has been placed successfully.</p>
+
+      <p><strong>Order ID:</strong> ${orderId}</p>
+
+      <table style="width:100%;border-collapse:collapse;margin-top:20px;">
+        <thead>
+          <tr>
+            <th align="left">Product</th>
+            <th align="left">Qty</th>
+            <th align="left">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemRows}
+        </tbody>
+      </table>
+
+      <h3>Total: ₹${total}</h3>
+
+      <p>Thank you for shopping with us.</p>
+    </div>
+  `;
+}
