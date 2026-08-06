@@ -52,7 +52,7 @@ function ResetPassword() {
     <>
       <div className="text-center mb-6">
         <div className="mx-auto mb-3 h-12 w-12 rounded-xl bg-sky-500 flex items-center justify-center text-white font-bold text-lg">
-          Z
+          A
         </div>
         <h2 className="text-2xl font-bold text-slate-800">
           {isReset ? "Password reset" : "Set a new password"}

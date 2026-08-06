@@ -179,7 +179,7 @@ async function sendOrderConfirmationEmail(order) {
 
     await sendEmail({
       to: customer.email,
-      subject: "Your Zaalima Marketplace order is confirmed",
+      subject: "Your Marketplace order is confirmed",
       html: orderConfirmationEmailTemplate({ name: customer.name, order }),
     });
   } catch (error) {

@@ -48,7 +48,7 @@ export async function registerUser({ name, email, password, role }) {
   const verifyUrl = `${CLIENT_URL}/verify-email?token=${rawVerificationToken}`;
   await sendEmail({
     to: user.email,
-    subject: "Verify your Zaalima Marketplace account",
+    subject: "Verify your Marketplace account",
     html: verificationEmailTemplate({ name: user.name, verifyUrl }),
   });
 
@@ -107,7 +107,7 @@ export async function requestPasswordReset(email) {
     const resetUrl = `${CLIENT_URL}/reset-password?token=${rawResetToken}`;
     await sendEmail({
       to: user.email,
-      subject: "Reset your Zaalima Marketplace password",
+      subject: "Reset your Marketplace password",
       html: resetPasswordEmailTemplate({ name: user.name, resetUrl }),
     });
   }
@@ -168,7 +168,7 @@ export async function resendVerification(email) {
     const verifyUrl = `${CLIENT_URL}/verify-email?token=${rawVerificationToken}`;
     await sendEmail({
       to: user.email,
-      subject: "Verify your Zaalima Marketplace account",
+      subject: "Verify your Marketplace account",
       html: verificationEmailTemplate({ name: user.name, verifyUrl }),
     });
   }

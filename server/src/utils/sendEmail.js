@@ -22,7 +22,7 @@ export function verificationEmailTemplate({ name, verifyUrl }) {
   return `
     <div style="font-family: sans-serif; max-width: 480px; margin: auto;">
       <h2 style="color:#0c447c;">Verify your email</h2>
-      <p>Hi ${name}, thanks for signing up to Zaalima Marketplace.</p>
+      <p>Hi ${name}, thanks for signing up to Marketplace.</p>
       <p><a href="${verifyUrl}" style="background:#378ADD;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;">Verify Email</a></p>
       <p style="color:#5c7a94;font-size:13px;">This link expires in 24 hours.</p>
     </div>

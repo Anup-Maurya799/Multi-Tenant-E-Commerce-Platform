@@ -26,10 +26,10 @@ function ShopLayout() {
       <header className="bg-white border-b border-sky-100 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-10">
         <Link to="/shop" className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-lg bg-sky-500 flex items-center justify-center text-white font-bold text-sm">
-            Z
+            A
           </div>
           <span className="font-semibold text-slate-800 hidden sm:inline">
-            Zaalima Marketplace
+            Marketplace
           </span>
         </Link>
 

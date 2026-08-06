@@ -47,7 +47,7 @@ function CreateStorePage() {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl shadow-sky-100 border border-sky-100 p-6 sm:p-8">
         <div className="text-center mb-6">
           <div className="mx-auto mb-3 h-12 w-12 rounded-xl bg-sky-500 flex items-center justify-center text-white font-bold text-lg">
-            Z
+            A
           </div>
           <h2 className="text-2xl font-bold text-slate-800">
             Set up your store

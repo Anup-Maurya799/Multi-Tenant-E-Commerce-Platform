@@ -58,7 +58,7 @@ function VendorLayout() {
       <aside className="w-full md:w-60 bg-white border-b md:border-b-0 md:border-r border-sky-100 flex md:flex-col">
         <div className="px-5 py-4 flex items-center gap-2.5 border-b border-sky-100 md:border-b md:border-sky-100">
           <div className="h-8 w-8 rounded-lg bg-sky-500 flex items-center justify-center text-white font-bold text-sm">
-            Z
+            A
           </div>
           <span className="font-semibold text-slate-800 hidden sm:inline truncate">
             {myStore?.name}
