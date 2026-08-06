@@ -23,6 +23,8 @@ import StoreSettingsPage from "../pages/vendor/StoreSettingsPage";
 import StorefrontPage from "../pages/shop/StorefrontPage";
 import ProductDetailPage from "../pages/shop/ProductDetailPage";
 import CartPage from "../pages/shop/CartPage";
+import CheckoutPage from "../pages/shop/CheckoutPage";
+import OrderConfirmationPage from "../pages/shop/OrderConfirmationPage";
 
 function AppRoutes() {
   return (
@@ -51,7 +53,18 @@ function AppRoutes() {
             element={<ProductDetailPage />}
           />
           <Route path="/cart" element={<CartPage />} />
-          {/* <Route path="/checkout" element={<CheckoutPage />} /> — Week 3 Day 3-5 (Stripe), not built yet */}
+        </Route>
+
+        {/* Checkout requires a logged-in customer — CartPage already redirects
+            to /login (remembering /cart) before ever reaching here. */}
+        <Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
+          <Route element={<ShopLayout />}>
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route
+              path="/order-confirmation"
+              element={<OrderConfirmationPage />}
+            />
+          </Route>
         </Route>
 
         {/* Vendor-only area */}
