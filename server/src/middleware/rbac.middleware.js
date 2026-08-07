@@ -1,7 +1,3 @@
-/**
- * Role gate — use after requireAuth. Blocks anyone whose role isn't in the
- * allowed list. Usage: router.get('/x', requireAuth, authorize('vendor'), handler)
- */
 export function authorize(...allowedRoles) {
   return (req, res, next) => {
     if (!req.user) {
