@@ -1,11 +1,21 @@
-import express from "express";
+import { Router } from "express";
+import * as analyticsController from "../controllers/analyticsController.js";
+import { requireAuth } from "../middleware/auth.js";
+import { authorize } from "../middleware/rbac.middleware.js";
 
-const router = express.Router();
+const router = Router();
 
-router.get("/", (req, res) => {
-  res.json({
-    message: "Analytics routes not implemented yet.",
-  });
-});
+router.get(
+  "/vendor",
+  requireAuth,
+  authorize("vendor"),
+  analyticsController.getVendorAnalytics,
+);
+router.get(
+  "/admin",
+  requireAuth,
+  authorize("superadmin"),
+  analyticsController.getSuperAdminAnalytics,
+);
 
 export default router;

@@ -19,10 +19,13 @@ import CreateStorePage from "../pages/vendor/CreateStorePage";
 import ProductListPage from "../pages/vendor/ProductListPage";
 import ProductFormPage from "../pages/vendor/ProductFormPage";
 import StoreSettingsPage from "../pages/vendor/StoreSettingsPage";
+import VendorAnalyticsPage from "../pages/vendor/VendorAnalyticsPage";
 
 import StorefrontPage from "../pages/shop/StorefrontPage";
 import ProductDetailPage from "../pages/shop/ProductDetailPage";
 import CartPage from "../pages/shop/CartPage";
+import SuperAdminLayout from "../layouts/SuperAdminLayout";
+import SuperAdminAnalyticsPage from "../pages/admin/SuperAdminAnalyticsPage";
 import CheckoutPage from "../pages/shop/CheckoutPage";
 import OrderConfirmationPage from "../pages/shop/OrderConfirmationPage";
 
@@ -78,6 +81,17 @@ function AppRoutes() {
               element={<ProductFormPage />}
             />
             <Route path="/vendor/store" element={<StoreSettingsPage />} />
+            <Route path="/vendor/analytics" element={<VendorAnalyticsPage />} />
+          </Route>
+        </Route>
+
+        {/* Super Admin area */}
+        <Route element={<ProtectedRoute allowedRoles={["superadmin"]} />}>
+          <Route element={<SuperAdminLayout />}>
+            <Route
+              path="/admin/analytics"
+              element={<SuperAdminAnalyticsPage />}
+            />
           </Route>
         </Route>
 

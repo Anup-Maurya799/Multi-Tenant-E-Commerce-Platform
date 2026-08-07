@@ -23,7 +23,7 @@ export function errorHandler(err, req, res, next) {
   }
 
   // MongoDB duplicate-key error — happens on a race condition even when
-  // application-level checks (e.g. "does this email already exist?) passed
+  // application-level checks (e.g. "does this email already exist?") passed
   // a moment earlier, since two requests can interleave between that check
   // and the actual insert.
   if (err.code === 11000) {
