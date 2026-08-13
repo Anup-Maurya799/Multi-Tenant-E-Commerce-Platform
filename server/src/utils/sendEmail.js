@@ -1,8 +1,6 @@
 import nodemailer from "nodemailer";
-
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
+  service: "gmail",
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
@@ -36,7 +34,7 @@ export function orderConfirmationEmailTemplate({ name, order }) {
         <tr>
           <td style="padding:6px 0;color:#345067;">${item.name}${item.variantLabel ? ` (${item.variantLabel})` : ""}</td>
           <td style="padding:6px 0;text-align:center;color:#5c7a94;">x${item.quantity}</td>
-          <td style="padding:6px 0;text-align:right;color:#345067;">$${(item.unitPrice * item.quantity).toFixed(2)}</td>
+          <td style="padding:6px 0;text-align:right;color:#345067;">Rs.${(item.unitPrice * item.quantity).toFixed(2)}</td>
         </tr>`,
     )
     .join("");
@@ -48,7 +46,7 @@ export function orderConfirmationEmailTemplate({ name, order }) {
       <table style="width:100%;border-collapse:collapse;margin:12px 0;">
         ${itemRows}
       </table>
-      <p style="font-weight:bold;color:#0c2b45;">Total: $${order.totalAmount.toFixed(2)}</p>
+      <p style="font-weight:bold;color:#0c2b45;">Total: RS.${order.totalAmount.toFixed(2)}</p>
       <p style="color:#5c7a94;font-size:13px;">Order ID: ${order._id}</p>
     </div>
   `;

@@ -129,13 +129,13 @@ function CheckoutPage() {
                 {item.variantLabel ? ` (${item.variantLabel})` : ""} x
                 {item.quantity}
               </span>
-              <span>${(item.unitPrice * item.quantity).toFixed(2)}</span>
+              <span>Rs.{(item.unitPrice * item.quantity).toFixed(2)}</span>
             </div>
           ))}
         </div>
         <div className="flex justify-between text-sm font-semibold text-slate-800 pt-2 border-t border-sky-50">
           <span>Total</span>
-          <span>${current.order.totalAmount.toFixed(2)}</span>
+          <span>Rs.{current.order.totalAmount.toFixed(2)}</span>
         </div>
       </div>
 

@@ -123,7 +123,7 @@ function ProductListPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-slate-600">
-                      ${Number(product.price).toFixed(2)}
+                      Rs.{Number(product.price).toFixed(2)}
                     </td>
                     <td className="px-4 py-3">
                       <span
@@ -208,7 +208,7 @@ function ProductListPage() {
                       {product.name}
                     </p>
                     <p className="text-sm text-slate-500">
-                      ${Number(product.price).toFixed(2)} ·{" "}
+                      Rs.{Number(product.price).toFixed(2)} ·{" "}
                       {product.stock === 0 ?
                         "Out of stock"
                       : `${product.stock} in stock`}

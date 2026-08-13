@@ -142,7 +142,7 @@ function ProductDetailPage() {
         <div>
           <h1 className="text-xl font-bold text-slate-800">{product.name}</h1>
           <p className="text-2xl font-semibold text-sky-600 mt-2">
-            ${Number(effectivePrice).toFixed(2)}
+            Rs.{Number(effectivePrice).toFixed(2)}
           </p>
           {product.description && (
             <p className="text-sm text-slate-500 mt-3 leading-relaxed">

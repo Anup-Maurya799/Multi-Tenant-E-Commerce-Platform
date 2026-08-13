@@ -86,7 +86,7 @@ function SuperAdminAnalyticsPage() {
         <StatCard
           icon={FaDollarSign}
           label="Total revenue"
-          value={`$${analytics.totalRevenue.toFixed(2)}`}
+          value={`Rs.${analytics.totalRevenue.toFixed(2)}`}
         />
         <StatCard
           icon={FaShoppingBag}
@@ -115,7 +115,10 @@ function SuperAdminAnalyticsPage() {
             />
             <YAxis tick={{ fontSize: 11, fill: "#64748b" }} width={40} />
             <Tooltip
-              formatter={(value) => [`$${Number(value).toFixed(2)}`, "Revenue"]}
+              formatter={(value) => [
+                `RS.${Number(value).toFixed(2)}`,
+                "Revenue",
+              ]}
               contentStyle={{
                 borderRadius: 8,
                 borderColor: "#cbd5e1",

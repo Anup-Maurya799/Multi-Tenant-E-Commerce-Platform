@@ -8,8 +8,9 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import { FaDollarSign, FaShoppingBag } from "react-icons/fa";
+import { FaShoppingBag } from "react-icons/fa";
 import analyticsService from "../../services/analyticsService";
+import { FaIndianRupeeSign } from "react-icons/fa6";
 
 function StatCard({ icon: Icon, label, value }) {
   return (
@@ -79,9 +80,9 @@ function VendorAnalyticsPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         <StatCard
-          icon={FaDollarSign}
+          icon={FaIndianRupeeSign}
           label="Total revenue (all time, paid orders)"
-          value={`$${analytics.totalRevenue.toFixed(2)}`}
+          value={`Rs.${analytics.totalRevenue.toFixed(2)}`}
         />
         <StatCard
           icon={FaShoppingBag}
@@ -104,7 +105,10 @@ function VendorAnalyticsPage() {
             />
             <YAxis tick={{ fontSize: 11, fill: "#64748b" }} width={40} />
             <Tooltip
-              formatter={(value) => [`$${Number(value).toFixed(2)}`, "Revenue"]}
+              formatter={(value) => [
+                `Rs.${Number(value).toFixed(2)}`,
+                "Revenue",
+              ]}
               contentStyle={{
                 borderRadius: 8,
                 borderColor: "#bae0fd",
@@ -137,7 +141,7 @@ function VendorAnalyticsPage() {
                 <span className="text-slate-700">{p.name}</span>
                 <span className="text-slate-500">{p.unitsSold} sold</span>
                 <span className="font-semibold text-slate-800">
-                  ${p.revenue.toFixed(2)}
+                  Rs.{p.revenue.toFixed(2)}
                 </span>
               </div>
             ))}

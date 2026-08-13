@@ -74,7 +74,7 @@ function StorefrontPage() {
                 {product.name}
               </p>
               <p className="text-sm text-sky-600 font-semibold mt-0.5">
-                ${Number(product.price).toFixed(2)}
+                RS.{Number(product.price).toFixed(2)}
               </p>
               {product.stock === 0 && (
                 <p className="text-xs text-red-400 mt-0.5">Out of stock</p>

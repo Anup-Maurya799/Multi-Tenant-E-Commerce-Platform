@@ -226,7 +226,7 @@ function ProductFormPage() {
                 htmlFor="price"
                 className="block text-sm font-medium text-slate-700 mb-1"
               >
-                Price ($)
+                Price (Rs.)
               </label>
               <input
                 id="price"

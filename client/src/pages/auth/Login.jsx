@@ -28,17 +28,32 @@ function Login() {
     setIsSubmitting(true);
     try {
       const user = await dispatch(loginUser({ email, password })).unwrap();
-      if (rememberMe) localStorage.setItem("rememberedEmail", email);
-      else localStorage.removeItem("rememberedEmail");
 
-      const redirectTo = location.state?.from?.pathname;
+      console.log("LOGIN USER:", user);
+      console.log("LOGIN ROLE:", user?.role);
+      console.log("ACCESS TOKEN:", localStorage.getItem("accessToken"));
+
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
+
+      const role = user?.role?.toLowerCase();
+
       const destinationByRole = {
         vendor: "/vendor/dashboard",
         superadmin: "/admin/analytics",
         customer: "/shop",
       };
-      if (redirectTo) navigate(redirectTo, { replace: true });
-      else navigate(destinationByRole[user.role] || "/shop", { replace: true });
+
+      const destination = destinationByRole[role] || "/shop";
+
+      console.log("REDIRECTING TO:", destination);
+
+      navigate(destination, {
+        replace: true,
+      });
     } catch (errorMessage) {
       setMessage(errorMessage);
     } finally {

@@ -29,7 +29,7 @@ function OrderConfirmationPage() {
                 <div className="flex justify-between text-slate-600">
                   <span>Order #{order._id.slice(-8)}</span>
                   <span className="font-semibold text-slate-800">
-                    ${order.totalAmount.toFixed(2)}
+                    Rs.{order.totalAmount.toFixed(2)}
                   </span>
                 </div>
               </div>

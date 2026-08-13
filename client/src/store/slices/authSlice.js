@@ -15,9 +15,20 @@ export const loginUser = createAsyncThunk(
   async ({ email, password }, { rejectWithValue }) => {
     try {
       const data = await authService.login({ email, password });
-      return data.user;
+
+      console.log("AUTH API RESPONSE:", data);
+
+      const user = data.user || data.data?.user;
+
+      console.log("AUTH USER:", user);
+
+      if (!user) {
+        throw new Error("Login succeeded but user data was not returned.");
+      }
+
+      return user;
     } catch (errorMessage) {
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(errorMessage?.message || errorMessage);
     }
   },
 );

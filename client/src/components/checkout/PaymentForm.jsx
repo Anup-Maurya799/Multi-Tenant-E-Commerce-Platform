@@ -73,7 +73,7 @@ function StripeInnerForm({ order, onSuccess }) {
         <FaLock size={12} />
         {isSubmitting ?
           "Processing..."
-        : `Pay $${order.totalAmount.toFixed(2)}`}
+        : `Pay Rs.${order.totalAmount.toFixed(2)}`}
       </button>
     </form>
   );
@@ -120,7 +120,7 @@ function MockPaymentForm({ order, onSuccess }) {
         <FaLock size={12} />
         {isSubmitting ?
           "Simulating..."
-        : `Simulate payment of $${order.totalAmount.toFixed(2)}`}
+        : `Simulate payment of Rs.${order.totalAmount.toFixed(2)}`}
       </button>
     </div>
   );

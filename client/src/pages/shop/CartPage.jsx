@@ -75,7 +75,7 @@ function CartPage() {
             <div className="min-w-0 flex-1">
               <p className="font-medium text-slate-700 truncate">{item.name}</p>
               <p className="text-sm text-slate-500">
-                ${item.price.toFixed(2)} each
+                Rs.{item.price.toFixed(2)} each
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -113,7 +113,7 @@ function CartPage() {
               </button>
             </div>
             <p className="w-16 text-right text-sm font-semibold text-slate-700">
-              ${(item.price * item.quantity).toFixed(2)}
+              Rs.{(item.price * item.quantity).toFixed(2)}
             </p>
             <button
               onClick={() =>
@@ -137,7 +137,7 @@ function CartPage() {
         <div>
           <p className="text-sm text-slate-500">Subtotal</p>
           <p className="text-xl font-bold text-slate-800">
-            ${subtotal.toFixed(2)}
+            RS.{subtotal.toFixed(2)}
           </p>
         </div>
         <button
