@@ -24,7 +24,7 @@ function SuperAdminLayout() {
       <header className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="h-8 w-8 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold text-sm">
-            Z
+            A
           </div>
           <span className="font-semibold text-slate-800">Super Admin</span>
         </div>
