@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { FaDollarSign, FaShoppingBag, FaStore, FaUsers } from "react-icons/fa";
 import analyticsService from "../../services/analyticsService";
+import { FaIndianRupeeSign } from "react-icons/fa6";
 
 function StatCard({ icon: Icon, label, value }) {
   return (
@@ -84,7 +85,7 @@ function SuperAdminAnalyticsPage() {
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <StatCard
-          icon={FaDollarSign}
+          icon={FaIndianRupeeSign}
           label="Total revenue"
           value={`Rs.${analytics.totalRevenue.toFixed(2)}`}
         />
@@ -151,7 +152,7 @@ function SuperAdminAnalyticsPage() {
                 <span className="text-slate-700">{s.storeName}</span>
                 <span className="text-slate-500">{s.orderCount} orders</span>
                 <span className="font-semibold text-slate-800">
-                  ${s.revenue.toFixed(2)}
+                  Rs.{s.revenue.toFixed(2)}
                 </span>
               </div>
             ))}

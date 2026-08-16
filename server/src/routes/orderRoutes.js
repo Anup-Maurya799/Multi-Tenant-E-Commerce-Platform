@@ -7,6 +7,9 @@ import { createOrderValidator } from "../validators/order.validator.js";
 
 const router = Router();
 
+/*
+ * Create order
+ */
 router.post(
   "/",
   requireAuth,
@@ -15,17 +18,37 @@ router.post(
   validateRequest,
   orderController.createOrder,
 );
+
+/*
+ * Customer's orders
+ */
 router.get(
   "/mine",
   requireAuth,
   authorize("customer"),
   orderController.getMyOrders,
 );
+
+/*
+ * Vendor's orders
+ */
 router.get(
   "/vendor/mine",
   requireAuth,
   authorize("vendor"),
   orderController.getVendorOrders,
+);
+
+/*
+ * Demo payment
+ *
+ * POST /api/v1/orders/:orderId/simulate-payment
+ */
+router.post(
+  "/:orderId/simulate-payment",
+  requireAuth,
+  authorize("customer"),
+  orderController.simulateMockPayment,
 );
 
 export default router;

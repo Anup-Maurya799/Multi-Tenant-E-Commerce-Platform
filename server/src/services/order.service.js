@@ -10,6 +10,7 @@ import {
 
 function findVariant(product, variantLabel) {
   if (!variantLabel) return null;
+
   return (
     product.variants.find(
       (v) => [v.size, v.color].filter(Boolean).join(" / ") === variantLabel,
@@ -18,13 +19,17 @@ function findVariant(product, variantLabel) {
 }
 
 /**
- * Creates an Order (status: pending) and a matching Stripe PaymentIntent.
- * Every price and stock check happens here, server-side — the client sends
- * only productId/quantity/variantLabel, NEVER a price. Trusting a
- * client-supplied price is the single most common e-commerce security bug.
+ * Creates an order and optionally creates a Stripe PaymentIntent.
  *
- * One order = one store. A cart spanning multiple vendors must call this
- * once per store (the frontend's checkout page handles that split).
+ * PAYMENT_MODE=mock
+ * -----------------
+ * Stripe is NOT called.
+ * The order is created with status "pending".
+ * The frontend can then use the demo payment endpoint.
+ *
+ * PAYMENT_MODE=stripe
+ * -------------------
+ * A real Stripe PaymentIntent is created.
  */
 export async function createOrderWithPaymentIntent(
   customerUser,
@@ -35,23 +40,27 @@ export async function createOrderWithPaymentIntent(
 
   for (const { productId, quantity, variantLabel } of items) {
     const product = await Product.findById(productId);
+
     if (!product) {
       throw new ApiError(
         404,
-        `One of the products in your cart could not be found.`,
+        "One of the products in your cart could not be found.",
       );
     }
+
     if (product.storeId.toString() !== storeId) {
       throw new ApiError(
         400,
         "All items in a single order must belong to the same store.",
       );
     }
+
     if (!product.isPublished) {
       throw new ApiError(400, `${product.name} is no longer available.`);
     }
 
     const variant = findVariant(product, variantLabel);
+
     if (variantLabel && !variant) {
       throw new ApiError(
         400,
@@ -60,6 +69,7 @@ export async function createOrderWithPaymentIntent(
     }
 
     const availableStock = variant ? variant.stock : product.stock;
+
     if (availableStock < quantity) {
       throw new ApiError(
         400,
@@ -68,6 +78,7 @@ export async function createOrderWithPaymentIntent(
     }
 
     const unitPrice = variant?.priceOverride ?? product.price;
+
     orderItems.push({
       product: product._id,
       name: product.name,
@@ -75,6 +86,7 @@ export async function createOrderWithPaymentIntent(
       quantity,
       unitPrice,
     });
+
     totalAmount += unitPrice * quantity;
   }
 
@@ -86,7 +98,31 @@ export async function createOrderWithPaymentIntent(
     status: "pending",
   });
 
-  // Stripe amounts are in the smallest currency unit (cents for USD).
+  /*
+   * MOCK PAYMENT MODE
+   *
+   * This is used for development/demo because a real Stripe
+   * secret key is not available.
+   */
+  if (process.env.PAYMENT_MODE === "mock") {
+    return {
+      order,
+      clientSecret: null,
+    };
+  }
+
+  /*
+   * REAL STRIPE MODE
+   *
+   * Only execute this when PAYMENT_MODE is not "mock".
+   */
+  if (!stripe) {
+    throw new ApiError(
+      500,
+      "Stripe is not configured. Set STRIPE_SECRET_KEY or use PAYMENT_MODE=mock.",
+    );
+  }
+
   const paymentIntent = await stripe.paymentIntents.create({
     amount: Math.round(totalAmount * 100),
     currency: "usd",
@@ -100,87 +136,53 @@ export async function createOrderWithPaymentIntent(
   order.stripePaymentIntentId = paymentIntent.id;
   await order.save();
 
-  return { order, clientSecret: paymentIntent.client_secret };
+  return {
+    order,
+    clientSecret: paymentIntent.client_secret,
+  };
 }
 
 /**
- * Decrements stock for every item on a now-paid order. Runs ONLY from the
- * webhook (i.e. only once payment is actually confirmed) — never at order
- * creation time, which would let abandoned/failed payments hold stock hostage.
+ * Decrements stock after successful payment.
  */
 async function decrementStockForOrder(order) {
   for (const item of order.items) {
     const product = await Product.findById(item.product);
-    if (!product) continue; // product may have been deleted since the order was placed
+
+    if (!product) continue;
 
     if (item.variantLabel) {
       const variant = findVariant(product, item.variantLabel);
-      if (variant) variant.stock = Math.max(0, variant.stock - item.quantity);
+
+      if (variant) {
+        variant.stock = Math.max(0, variant.stock - item.quantity);
+      }
     } else {
       product.stock = Math.max(0, product.stock - item.quantity);
     }
+
     await product.save();
   }
 }
 
 /**
- * Single entry point for every Stripe webhook event this app cares about.
- * Signature verification happens in the controller — by the time an event
- * reaches here, it's already confirmed to genuinely be from Stripe.
- */
-export async function handleStripeWebhookEvent(event) {
-  switch (event.type) {
-    case "payment_intent.succeeded": {
-      const paymentIntent = event.data.object;
-      const order = await Order.findOne({
-        stripePaymentIntentId: paymentIntent.id,
-      });
-      if (!order) return; // could be a PaymentIntent from a different flow/test — ignore, don't error
-
-      // Idempotency guard: Stripe can and does deliver the same event more
-      // than once. Without this check, a retried webhook would double-decrement stock.
-      if (order.status === "paid") return;
-
-      order.status = "paid";
-      await order.save();
-      await decrementStockForOrder(order);
-      await sendOrderConfirmationEmail(order);
-      break;
-    }
-
-    case "payment_intent.payment_failed": {
-      const paymentIntent = event.data.object;
-      const order = await Order.findOne({
-        stripePaymentIntentId: paymentIntent.id,
-      });
-      if (order && order.status === "pending") {
-        order.status = "cancelled";
-        await order.save();
-      }
-      break;
-    }
-
-    default:
-      // Unhandled event types are expected and fine — Stripe sends many
-      // event types this app doesn't act on yet (e.g. refund events, Week 4+).
-      break;
-  }
-}
-
-/**
- * A failed email must never undo a successful payment — if this throws,
- * we log it and move on rather than letting an SMTP hiccup roll back
- * the order status or stock decrement that already happened.
+ * Sends order confirmation email.
+ *
+ * Email failure must never break a successful payment.
  */
 async function sendOrderConfirmationEmail(order) {
   try {
     const customer = await User.findById(order.customer);
+
     if (!customer) return;
 
     await sendEmail({
       to: customer.email,
       subject: "Your Marketplace order is confirmed",
-      html: orderConfirmationEmailTemplate({ name: customer.name, order }),
+      html: orderConfirmationEmailTemplate({
+        name: customer.name,
+        order,
+      }),
     });
   } catch (error) {
     console.error(
@@ -190,13 +192,122 @@ async function sendOrderConfirmationEmail(order) {
   }
 }
 
+/**
+ * MOCK PAYMENT
+ *
+ * Used only when PAYMENT_MODE=mock.
+ *
+ * It simulates the successful payment confirmation that
+ * would normally come from Stripe's webhook.
+ */
+export async function simulateMockPayment(orderId, customerUser) {
+  if (process.env.PAYMENT_MODE !== "mock") {
+    throw new ApiError(403, "Mock payment is disabled.");
+  }
+
+  const order = await Order.findOne({
+    _id: orderId,
+    customer: customerUser._id,
+  });
+
+  if (!order) {
+    throw new ApiError(404, "Order not found.");
+  }
+
+  /*
+   * Idempotency:
+   * If the order is already paid, don't decrease stock again.
+   */
+  if (order.status === "paid") {
+    return order;
+  }
+
+  if (order.status !== "pending") {
+    throw new ApiError(
+      400,
+      `This order cannot be paid because its current status is "${order.status}".`,
+    );
+  }
+
+  // Mark payment as successful.
+  order.status = "paid";
+
+  await order.save();
+
+  // Decrease product stock only after successful payment.
+  await decrementStockForOrder(order);
+
+  // Send confirmation email.
+  await sendOrderConfirmationEmail(order);
+
+  return order;
+}
+
+/**
+ * Handles Stripe webhook events when real Stripe is used.
+ */
+export async function handleStripeWebhookEvent(event) {
+  switch (event.type) {
+    case "payment_intent.succeeded": {
+      const paymentIntent = event.data.object;
+
+      const order = await Order.findOne({
+        stripePaymentIntentId: paymentIntent.id,
+      });
+
+      if (!order) return;
+
+      // Prevent duplicate stock decrement.
+      if (order.status === "paid") return;
+
+      order.status = "paid";
+
+      await order.save();
+
+      await decrementStockForOrder(order);
+
+      await sendOrderConfirmationEmail(order);
+
+      break;
+    }
+
+    case "payment_intent.payment_failed": {
+      const paymentIntent = event.data.object;
+
+      const order = await Order.findOne({
+        stripePaymentIntentId: paymentIntent.id,
+      });
+
+      if (order && order.status === "pending") {
+        order.status = "cancelled";
+
+        await order.save();
+      }
+
+      break;
+    }
+
+    default:
+      break;
+  }
+}
+
 export async function getMyOrders(customerUser) {
-  return Order.find({ customer: customerUser._id }).sort({ createdAt: -1 });
+  return Order.find({
+    customer: customerUser._id,
+  }).sort({
+    createdAt: -1,
+  });
 }
 
 export async function getVendorOrders(vendorUser) {
   if (!vendorUser.storeId) {
     throw new ApiError(400, "You don't have a store yet.");
   }
-  return Order.find({ storeId: vendorUser.storeId }).sort({ createdAt: -1 });
+
+  return Order.find({
+    storeId: vendorUser.storeId,
+  }).sort({
+    createdAt: -1,
+  });
 }
