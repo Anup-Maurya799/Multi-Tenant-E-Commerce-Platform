@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "test": "vitest",
+  "test:ui": "vitest --ui"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Anup-Maurya799/Multi-Tenant-E-Commerce-Platform.git"
@@ -20,5 +21,9 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",
     "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@vitest/ui": "^4.1.10",
+    "vitest": "^4.1.10"
   }
 }
