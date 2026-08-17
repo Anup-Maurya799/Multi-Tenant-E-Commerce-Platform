@@ -1,0 +1,22 @@
+name: Backend Deploy
+
+# Runs only on a push to main (not PRs) — and only after backend-ci.yml's
+# test job has already succeeded for this exact commit, via workflow_run.
+# This is what stops a red build from ever reaching production.
+on:
+  workflow_run:
+    workflows: ["Backend CI"]
+    branches: [main]
+    types: [completed]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Trigger Render deploy
+        run: |
+          curl -f -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+        # RENDER_DEPLOY_HOOK_URL: from your Render service's Settings > Deploy Hook.
+        # Add it in GitHub: Repo Settings > Secrets and variables > Actions > New repository secret.
